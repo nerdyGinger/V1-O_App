@@ -1,58 +1,41 @@
-package com.assistant.nerdyginger.v1_o;
+package com.assistant.nerdyginger.v1_othings;
 
-import android.Manifest;
+import android.app.Activity;
 import android.content.pm.PackageManager;
 import android.os.AsyncTask;
-import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.TextView;
 
 import java.io.File;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
-import java.util.HashMap;
 
-import ai.api.android.AIConfiguration;
 import ai.api.AIListener;
+import ai.api.android.AIConfiguration;
 import ai.api.android.AIService;
 import ai.api.model.AIError;
 import ai.api.model.AIResponse;
 import ai.api.model.Fulfillment;
 import ai.api.model.Result;
-import ai.api.ui.AIButton;
 import edu.cmu.pocketsphinx.Assets;
 import edu.cmu.pocketsphinx.Hypothesis;
-import edu.cmu.pocketsphinx.RecognitionListener;
 import edu.cmu.pocketsphinx.SpeechRecognizer;
 import edu.cmu.pocketsphinx.SpeechRecognizerSetup;
+import edu.cmu.pocketsphinx.RecognitionListener;
 
-public class MainActivity extends AppCompatActivity implements RecognitionListener, AIListener {
+
+public class MainActivity extends Activity implements RecognitionListener, AIListener{
     private SpeechRecognizer recognizer;
     private AIService aiService;
     private Synthesizer mSynth;
     private String KEYPHRASE = "v one oh";
     private String KW_SEARCH = "wakeup";
-    private TextView textView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        textView = findViewById(R.id.textBox);
 
-        //Permission check
-        int permissionCheck = ContextCompat.checkSelfPermission(getApplicationContext(),
-                Manifest.permission.RECORD_AUDIO);
-        if (permissionCheck != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.RECORD_AUDIO}, 1);
-        }
-
-        //Setup
         new SetupTask(this).execute();
         if (mSynth == null) {
             mSynth = new Synthesizer(getString(R.string.bingSpeechApiKey));
@@ -66,41 +49,7 @@ public class MainActivity extends AppCompatActivity implements RecognitionListen
                 AIConfiguration.RecognitionEngine.System);
         aiService = AIService.getService(getApplicationContext(), config);
         aiService.setListener(this);
-
-        AIButton aiButton = findViewById(R.id.mic);
-        aiButton.initialize(config);
-        aiButton.setResultsListener(new AIButton.AIButtonListener() {
-            @Override
-            public void onResult(final AIResponse result) {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Result res = result.getResult();
-                        Fulfillment fulfillment = res.getFulfillment();
-                        String speech = fulfillment.getSpeech();
-                        textView.setText(speech);
-                        mSynth.SpeakToAudio(speech);
-                        Log.d("HEY_ITS_ME", speech);
-                        //aiService.startListening();
-                        recognizer.startListening(KW_SEARCH, 8000);
-                    }
-                });
-            }
-
-            @Override
-            public void onError(final AIError error) {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Log.e("HEY_ITS_ME", error.toString());
-                    }
-                });
-            }
-
-            @Override
-            public void onCancelled() {        }
-        });
-}
+    }
 
     private static class SetupTask extends AsyncTask<Void, Void, Exception> {
         WeakReference<MainActivity> activityReference;
@@ -142,8 +91,8 @@ public class MainActivity extends AppCompatActivity implements RecognitionListen
 
     //RecognizerListener Overrides
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
-                                           @NonNull int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                                           int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == 1) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
@@ -207,11 +156,10 @@ public class MainActivity extends AppCompatActivity implements RecognitionListen
                 Result result = response.getResult();
                 Fulfillment fulfillment = result.getFulfillment();
                 String speech = fulfillment.getSpeech();
-                textView.setText(speech);
                 mSynth.SpeakToAudio(speech);
                 Log.d("HEY_ITS_ME", speech);
                 //aiService.startListening();
-				recognizer.startListening(KW_SEARCH, 8000);
+                recognizer.startListening(KW_SEARCH, 8000);
             }
         });
     }

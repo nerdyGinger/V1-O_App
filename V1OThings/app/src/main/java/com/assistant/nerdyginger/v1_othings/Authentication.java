@@ -31,7 +31,7 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-package com.assistant.nerdyginger.v1_o;
+package com.assistant.nerdyginger.v1_othings;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;

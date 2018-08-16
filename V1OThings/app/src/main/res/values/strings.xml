@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">V1-O Things</string>
+    <string name="bingSpeechApiKey">dc80465da82b4f59b9e1e6b8fa5fff0e</string>
+    <string name="dialogflowApiKey">e83ebe514d5b4de5aed7b587d063c69e</string>
+</resources>
