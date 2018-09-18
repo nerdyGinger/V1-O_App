@@ -53,7 +53,7 @@ public class MainActivity extends AppCompatActivity implements RecognitionListen
         }
 
         //Setup
-        new SetupTask(this).execute();
+        //new SetupTask(this).execute(); //sets up wake-word listening
         if (mSynth == null) {
             mSynth = new Synthesizer(getString(R.string.bingSpeechApiKey));
         }
@@ -64,8 +64,8 @@ public class MainActivity extends AppCompatActivity implements RecognitionListen
         final AIConfiguration config = new AIConfiguration(getString(R.string.dialogflowApiKey),
                 AIConfiguration.SupportedLanguages.English,
                 AIConfiguration.RecognitionEngine.System);
-        aiService = AIService.getService(getApplicationContext(), config);
-        aiService.setListener(this);
+        //aiService = AIService.getService(getApplicationContext(), config);
+        //aiService.setListener(this);
 
         AIButton aiButton = findViewById(R.id.mic);
         aiButton.initialize(config);
@@ -81,8 +81,8 @@ public class MainActivity extends AppCompatActivity implements RecognitionListen
                         textView.setText(speech);
                         mSynth.SpeakToAudio(speech);
                         Log.d("HEY_ITS_ME", speech);
-                        //aiService.startListening();
-                        recognizer.startListening(KW_SEARCH, 8000);
+                        //aiService.startListening();s
+                        //recognizer.startListening(KW_SEARCH, 8000);
                     }
                 });
             }
@@ -140,7 +140,7 @@ public class MainActivity extends AppCompatActivity implements RecognitionListen
         recognizer.addKeyphraseSearch(KW_SEARCH, KEYPHRASE);
     }
 
-    //RecognizerListener Overrides
+    //RecognizerListener Overrides -----------------------------------------------------------------
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
                                            @NonNull int[] grantResults) {
@@ -198,7 +198,7 @@ public class MainActivity extends AppCompatActivity implements RecognitionListen
     @Override
     public void onTimeout() {   }
 
-    //AIListener Overrides
+    //AIListener Overrides -------------------------------------------------------------------------
     @Override
     public void onResult(final AIResponse response) {
         runOnUiThread(new Runnable() {
