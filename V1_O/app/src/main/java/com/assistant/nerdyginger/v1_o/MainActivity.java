@@ -78,6 +78,13 @@ public class MainActivity extends AppCompatActivity implements RecognitionListen
                         Result res = result.getResult();
                         Fulfillment fulfillment = res.getFulfillment();
                         String speech = fulfillment.getSpeech();
+                        String source = fulfillment.getSource();
+                        if (source.startsWith("android")) {
+                            String[] params = source.split(";");
+                            if (params[1].equals("setReminder")) { addReminder(params[2], params[3]);}
+                            if (params[1].equals("setAlarm")) { setAlarm(params[2], params[3], params[4], params[5]); }
+                            if (params[1].equals("removeAlarm")) { removeAlarm(params[2], params[3], params[4]); }
+                        }
                         textView.setText(speech);
                         mSynth.SpeakToAudio(speech);
                         Log.d("HEY_ITS_ME", speech);
@@ -102,6 +109,20 @@ public class MainActivity extends AppCompatActivity implements RecognitionListen
         });
 }
 
+    //Platform-based functions ---------------------------------------------------------------------
+    private void addReminder(String datetime, String reminder) {
+
+    }
+
+    private void setAlarm(String name, String date, String time, String recurrence) {
+
+    }
+
+    private void removeAlarm(String time, String date, String removeAll) {
+
+    }
+
+    //Setup for wake-word recognition --------------------------------------------------------------
     private static class SetupTask extends AsyncTask<Void, Void, Exception> {
         WeakReference<MainActivity> activityReference;
 
